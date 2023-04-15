@@ -4,16 +4,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (tab && tab.id) {
     try {
+      // content.js を実行します
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         files: ['content.js'],
       });
 
-      const port = chrome.tabs.connect(tab.id);
-      port.postMessage({ action: 'extractText' });
+      const popupPort = chrome.runtime.connect({ name: 'popup' });
 
-      port.onMessage.addListener((response) => {
-        if (response.error) {
+      // 修正: contentScriptLoaded メッセージを受信したら、extractText メッセージを送信
+      popupPort.onMessage.addListener((response) => {
+        if (response.action === 'contentScriptLoaded') {
+          popupPort.postMessage({ action: 'extractText' });
+        } else if (response.error) {
           console.error(response.error);
           responseDiv.textContent = 'Error: Unable to fetch page text';
         } else if (response.text) {
