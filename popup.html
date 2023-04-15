@@ -2,12 +2,63 @@
 <html>
   <head>
     <title>GPT DAO Summarizer</title>
+    <style>
+      body {
+        min-width: 400px;
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+      }
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      form {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      label {
+        font-size: 16px;
+        margin-right: 10px;
+      }
+      input[type="text"] {
+        font-size: 16px;
+        padding: 5px;
+        width: 300px;
+        border: 1px solid #ccc;
+      }
+      button[type="submit"] {
+        font-size: 16px;
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button[type="submit"]:hover {
+        background-color: #3e8e41;
+      }
+      #response {
+        font-size: 16px;
+        line-height: 1.5;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+        max-width: 600px;
+        overflow-y: auto;
+        height: 100%;
+      }
+    </style>
   </head>
   <body>
     <h1>GPT DAO Summarizer</h1>
     <form id="prompt-form">
       <label for="prompt">Prompt:</label>
-      <input type="text" id="prompt" name="prompt">
       <button type="submit">Send</button>
     </form>
     <div id="response"></div>

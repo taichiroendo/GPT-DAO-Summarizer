@@ -1,6 +1,6 @@
 document.getElementById('prompt-form').addEventListener('submit', async (event) => {
     event.preventDefault();
-    const prompt = document.getElementById('prompt').value;
+    const prompt = "Hello";
     const responseDiv = document.getElementById('response');
     responseDiv.innerHTML = '';
   
@@ -18,7 +18,7 @@ document.getElementById('prompt-form').addEventListener('submit', async (event) 
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: 'Hello!' }]
+        messages: [{ role: 'user', content: `${prompt}` }]
       })
     };
   
