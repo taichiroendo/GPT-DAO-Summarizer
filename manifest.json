@@ -1,20 +1,29 @@
-  {
-    "manifest_version": 3,
-    "name": "GPT DAO Summarizer",
-    "version": "1.0",
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-        "16": "icon16.png"
-      }
-    },
-    "options_page": "options.html",
-    "permissions": [
-      "activeTab",
-      "storage"
-    ],
-    "background": {
-      "service_worker": "background.js"
+{
+  "manifest_version": 3,
+  "name": "Text Extractor",
+  "version": "1.0",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png"
     }
-  }
-  
+  },
+  "options_page": "options.html",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}

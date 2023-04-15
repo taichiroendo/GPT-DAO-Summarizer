@@ -1,49 +1,33 @@
-document.getElementById('prompt-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const prompt = "Hello";
-    const responseDiv = document.getElementById('response');
-    responseDiv.innerHTML = '';
-  
-    const { apiKey } = await chrome.storage.sync.get('apiKey');
-    if (!apiKey) {
-      alert('API Key is not set. Please set it in the options page.');
-      return;
-    }
-  
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: `${prompt}` }]
-      })
-    };
-  
+document.addEventListener('DOMContentLoaded', async () => {
+  const responseDiv = document.getElementById('extracted-text');
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true, lastFocusedWindow: true });
+
+  if (tab && tab.id) {
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', requestOptions);
-        const data = await response.json();
-      
-        console.log('Response data:', data); // Add this line to log the response data
-      
-        if (data.choices && data.choices[0] && data.choices[0].message.content) {
-          const text = data.choices[0].message.content.trim();
-      
-          for (const character of text) {
-            const span = document.createElement('span');
-            span.textContent = character;
-            responseDiv.appendChild(span);
-            await new Promise(resolve => setTimeout(resolve, 100));
-          }
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['content.js'],
+      });
+
+      const port = chrome.tabs.connect(tab.id);
+      port.postMessage({ action: 'extractText' });
+
+      port.onMessage.addListener((response) => {
+        if (response.error) {
+          console.error(response.error);
+          responseDiv.textContent = 'Error: Unable to fetch page text';
+        } else if (response.text) {
+          responseDiv.textContent = response.text;
         } else {
-          responseDiv.textContent = 'Error: No response from ChatGPT';
-          console.error('Error: No response from ChatGPT', data); // Add this line to log the error
+          responseDiv.textContent = 'Error: Unable to fetch page text';
         }
-      } catch (error) {
-        console.error('Error:', error);
-        responseDiv.textContent = 'Error: Unable to fetch response from ChatGPT';
-      }      
-  });
-  
+      });
+
+    } catch (error) {
+      console.error('Error:', error);
+      responseDiv.textContent = 'Error: Unable to fetch page text';
+    }
+  } else {
+    responseDiv.textContent = 'Error: No active tab found';
+  }
+});
