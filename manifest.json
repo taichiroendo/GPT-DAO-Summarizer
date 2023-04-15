@@ -1,0 +1,20 @@
+  {
+    "manifest_version": 3,
+    "name": "GPT DAO Summarizer",
+    "version": "1.0",
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "images/icon16.png"
+      }
+    },
+    "options_page": "options.html",
+    "permissions": [
+      "activeTab",
+      "storage"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    }
+  }
+  
